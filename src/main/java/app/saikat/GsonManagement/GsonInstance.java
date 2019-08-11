@@ -8,7 +8,7 @@ import app.saikat.DIManagement.Provides;
 class GsonInstance {
 
     @Provides
-    public Gson getGson() {
+    public static Gson getGson() {
         return new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .setExclusionStrategies(new AnnotedExclusionStrategy())
                 .registerTypeAdapterFactory(new PostProcessingAdapterFactory())
