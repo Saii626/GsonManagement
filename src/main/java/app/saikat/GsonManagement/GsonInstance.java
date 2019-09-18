@@ -4,15 +4,25 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import app.saikat.DIManagement.Provides;
+import app.saikat.GsonManagement.AnnotedExclusionStrategy;
+import app.saikat.GsonManagement.PostProcessingAdapterFactory;
 
-class GsonInstance {
+public class GsonInstance {
+
+    // private static Gson gson;
 
     @Provides
     public static Gson getGson() {
-        return new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+        GsonBuilder builder = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .setExclusionStrategies(new AnnotedExclusionStrategy())
                 .registerTypeAdapterFactory(new PostProcessingAdapterFactory())
-                .setPrettyPrinting().serializeNulls()
-                .create();
+                .serializeNulls();
+
+        String build = System.getProperty("build");
+        if (build == null || !build.equals("prod")) builder.setPrettyPrinting();
+
+        // gson = builder.create();
+        return builder.create();
     }
+
 }

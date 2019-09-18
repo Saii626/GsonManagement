@@ -16,7 +16,7 @@ import java.util.function.Function;
 @SuppressWarnings("unchecked")
 class JsonObjectAdapter implements TypeAdapterFactory {
 
-    private static TypeAdapter jsonObjectAdapter;
+    private static TypeAdapter<?> jsonObjectAdapter;
     private static final Map<Class<?>, Class<?>> conversionMap = getWrapperTypes();
 
     private static Map<Class<?>, Class<?>> getWrapperTypes() {
@@ -47,7 +47,7 @@ class JsonObjectAdapter implements TypeAdapterFactory {
 
         if (jsonObjectAdapter == null) {
 
-            Function<Class<?>, TypeAdapter> gsonAdapter = gson::getAdapter;
+            Function<Class<?>, TypeAdapter<?>> gsonAdapter = gson::getAdapter;
 
             jsonObjectAdapter = new TypeAdapter<T>() {
 
@@ -79,9 +79,9 @@ class JsonObjectAdapter implements TypeAdapterFactory {
                             out.value((Double) objectToWrite.getObject());
                         }
                     } else {
-                        gsonAdapter.apply(classToWrite).write(out, objectToWrite.getObject());
+                        TypeAdapter<T> adapter = (TypeAdapter<T>) gsonAdapter.apply(classToWrite);
+                        adapter.write(out, (T) objectToWrite.getObject());
                     }
-//
                     out.endObject();
                 }
 
@@ -92,31 +92,34 @@ class JsonObjectAdapter implements TypeAdapterFactory {
                         return null;
                     }
 
-                    JsonObject jsonObject = new JsonObject();
+                    // JsonObject jsonObject = new JsonObject();
+                    String typename;
+                    String dataName;
+                    Object object = null;
 
                     in.beginObject();
-                    jsonObject.setTypeName(in.nextName());
+                    typename = in.nextName();
 
                     String className = in.nextString();
                     try {
                         Class<?> classType = Class.forName(className);
 
-                        jsonObject.setDataName(in.nextName());
+                        dataName = in.nextName();
                         if (conversionMap.get(classType) != null) {
                             Class<?> c = conversionMap.get(classType);
                             if (c.equals(Boolean.class)) {
-                                jsonObject.setObject(in.nextBoolean());
+                                 object = in.nextBoolean();
                             } else if (c.equals(String.class)) {
-                                jsonObject.setObject(in.nextString());
+                                object = in.nextString();
                             } else if (c.equals(Integer.class)) {
-                                jsonObject.setObject(in.nextInt());
+                                object = in.nextInt();
                             } else if (c.equals(Long.class)) {
-                                jsonObject.setObject(in.nextLong());
+                                object = in.nextLong();
                             } else if (c.equals(Double.class)) {
-                                jsonObject.setObject(in.nextDouble());
+                                object = in.nextDouble();
                             }
                         } else {
-                            jsonObject.setObject(gsonAdapter.apply(classType).read(in));
+                            object = gsonAdapter.apply(classType).read(in);
                         }
 
                     } catch (ClassNotFoundException e) {
@@ -125,10 +128,10 @@ class JsonObjectAdapter implements TypeAdapterFactory {
                     }
 
                     in.endObject();
-                    return (T) jsonObject;
+                    return (T) new JsonObject(object, typename, dataName);
                 }
             };
         }
-        return jsonObjectAdapter;
+        return (TypeAdapter<T>) jsonObjectAdapter;
     }
 }

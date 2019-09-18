@@ -7,37 +7,50 @@ public class JsonObject {
     private Object object;
     private String typeName, dataName;
 
+    /**
+     * Creates a new JsonObject wrapping this object such that this object can be read from or
+     * written to json string
+     * @param object the object to wrap
+     */
     public JsonObject(Object object) {
+        this(object, "type", "data");
+    }
+
+    /**
+     * Internal API
+     */
+    JsonObject(Object object, String typeName, String dataName) {
         this.object = object;
-        this.typeName = "type";
-        this.dataName = "data";
+        this.typeName = typeName;
+        this.dataName = dataName;
+
     }
 
-    public JsonObject() {
-        this(null);
-    }
-
+    /**
+     * Gets the object stored in this
+     * @return the object this holds
+     */
     public Object getObject() {
         return object;
     }
 
-    public String getTypeName() {
+    // void setObject(Object object) {
+    //     this.object = object;
+    // }
+
+    String getTypeName() {
         return typeName;
     }
 
-    public String getDataName() {
+    String getDataName() {
         return dataName;
     }
 
-    public void setObject(Object object) {
-        this.object = object;
-    }
+    // public void setTypeName(String typeName) {
+    //     this.typeName = typeName;
+    // }
 
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
-
-    public void setDataName(String dataName) {
-        this.dataName = dataName;
-    }
+    // public void setDataName(String dataName) {
+    //     this.dataName = dataName;
+    // }
 }
