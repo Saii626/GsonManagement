@@ -15,6 +15,7 @@ public class GsonInstance {
     public static Gson getGson() {
         GsonBuilder builder = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                 .setExclusionStrategies(new AnnotedExclusionStrategy())
+                .registerTypeAdapter(Class.class, new JsonClassAdapter())
                 .registerTypeAdapterFactory(new PostProcessingAdapterFactory())
                 .serializeNulls();
 

@@ -1,25 +1,29 @@
 package app.saikat.GsonManagement;
 
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
-import java.io.IOException;
+import java.lang.reflect.Type;
 
-class JsonClassAdapter extends TypeAdapter<Class<?>> {
+class JsonClassAdapter implements JsonSerializer<Class<?>>, JsonDeserializer<Class<?>> {
+
     @Override
-    public void write(JsonWriter out, Class<?> value) throws IOException {
-        out.value(value.getName());
+    public Class<?> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+            throws JsonParseException {
+        try {
+            return Class.forName(json.getAsString());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Unable to cast");
+        }
     }
 
     @Override
-    public Class<?> read(JsonReader in) throws IOException {
-        String className = in.nextString();
-        try {
-            return Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
+    public JsonElement serialize(Class<?> src, Type typeOfSrc, JsonSerializationContext context) {
+        return new JsonPrimitive(src.getName());
     }
 }

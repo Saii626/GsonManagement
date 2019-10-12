@@ -14,6 +14,8 @@ public class SampleClass {
     private long l;
     private char c;
 
+    private Class<?> cls;
+
     private Map<String, List<TestType>> map;
 
     public int getI() {
@@ -48,12 +50,16 @@ public class SampleClass {
         return this.c;
     }
 
+    public Class<?> getCls() {
+        return cls;
+    }
+
     public Map<String, List<TestType>> getMap() {
         return this.map;
     }
 
     public SampleClass(int i, String str, double d, float f, byte b, short s, long l, char c,
-            Map<String, List<TestType>> map) {
+            Map<String, List<TestType>> map, Class<?> cls) {
         this.i = i;
         this.str = str;
         this.d = d;
@@ -63,6 +69,7 @@ public class SampleClass {
         this.l = l;
         this.c = c;
         this.map = map;
+        this.cls = cls;
     }
 
     @Override
@@ -70,7 +77,7 @@ public class SampleClass {
         if (obj instanceof SampleClass) {
             SampleClass sc = (SampleClass) obj;
             return i == sc.i && d == sc.d && f == sc.f && b == sc.b && s == sc.s && l == sc.l && c == sc.c
-                    && str.equals(sc.str) && map.equals(sc.map);
+                    && str.equals(sc.str) && map.equals(sc.map) && cls.equals(sc.cls);
         } else {
             return false;
         }

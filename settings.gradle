@@ -1,6 +1,7 @@
-include ':DIManagement', ':LogManagement'
+include ':DIManagement', ':LogManagement', ':PojoCollections'
 
 project(':DIManagement').projectDir = file('../DIManagement')
 project(':LogManagement').projectDir = file('../LogManagement')
+project(':PojoCollections').projectDir = file('../PojoCollections')
 
 rootProject.name = 'GsonManagement'

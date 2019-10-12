@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 import org.junit.Test;
 
 import app.saikat.DIManagement.DIManager;
+import app.saikat.DIManagement.Configurations.ScanConfig;
 import app.saikat.DIManagement.Exceptions.ClassNotUnderDIException;
 import app.saikat.GsonManagement.Test_1.TestGson;
 import app.saikat.GsonManagement.Test_2.SampleClass;
@@ -28,7 +29,9 @@ public class GsonTest {
 
     @Test
     public void gsonInstanceCreate() throws ClassNotUnderDIException {
-        DIManager.initialize("app.saikat.GsonManagement");
+        DIManager.initialize(ScanConfig.newBuilder()
+                .addPackagesToScan("app.saikat.GsonManagement")
+                .build());
 
         TestGson t = DIManager.get(TestGson.class);
         Gson gson = DIManager.get(Gson.class);
@@ -40,7 +43,9 @@ public class GsonTest {
     @Test
     public void conversionTest() throws UnsupportedEncodingException, IOException, ClassNotUnderDIException {
         System.setProperty("build", "dev");
-        DIManager.initialize("app.saikat.GsonManagement");
+        DIManager.initialize(ScanConfig.newBuilder()
+                .addPackagesToScan("app.saikat.GsonManagement")
+                .build());
 
         Map<String, List<TestType>> map = new HashMap<>();
         List<TestType> l1 = new ArrayList<>();
@@ -59,24 +64,27 @@ public class GsonTest {
         l2.add(new TestType("pwigjbs", 1897));
         map.put("cvbud", l2);
 
-        SampleClass sampleObject = new SampleClass(123, "saii", 10.56464654654324, 1.154f, (byte) 127, (short) 487, 12487568754l, 'c', map);
+        SampleClass sampleObject = new SampleClass(123, "saii", 10.56464654654324, 1.154f, (byte) 127, (short) 487,
+                12487568754l, 'c', map, TestGson.class);
         Gson gson = DIManager.get(Gson.class);
         String jsonStr = gson.toJson(sampleObject);
 
         File f = new File("src/test/java/app/saikat/GsonManagement/Test_2/pretty_json.txt");
         String fileContents = new String(Files.readAllBytes(f.toPath()), "utf-8");
-        
+
         assertEquals("converted to json correctly", jsonStr, fileContents);
 
         SampleClass parsedObj = gson.fromJson(jsonStr, SampleClass.class);
-        
+
         assertEquals("converted to object correctly", sampleObject, parsedObj);
     }
-    
+
     @Test
     public void conversionTestProd() throws UnsupportedEncodingException, IOException, ClassNotUnderDIException {
         System.setProperty("build", "prod");
-        DIManager.initialize("app.saikat.GsonManagement");
+        DIManager.initialize(ScanConfig.newBuilder()
+                .addPackagesToScan("app.saikat.GsonManagement")
+                .build());
 
         Map<String, List<TestType>> map = new HashMap<>();
         List<TestType> l1 = new ArrayList<>();
@@ -95,18 +103,19 @@ public class GsonTest {
         l2.add(new TestType("pwigjbs", 1897));
         map.put("cvbud", l2);
 
-        SampleClass sampleObject = new SampleClass(123, "saii", 10.56464654654324, 1.154f, (byte) 127, (short) 487, 12487568754l, 'c', map);
+        SampleClass sampleObject = new SampleClass(123, "saii", 10.56464654654324, 1.154f, (byte) 127, (short) 487,
+                12487568754l, 'c', map, TestGson.class);
 
         Gson gson = DIManager.get(Gson.class);
         String jsonStr = gson.toJson(sampleObject);
 
         File f = new File("src/test/java/app/saikat/GsonManagement/Test_2/compact_json.txt");
         String fileContents = new String(Files.readAllBytes(f.toPath()), "utf-8");
-        
+
         assertEquals("converted to json correctly", jsonStr.trim(), fileContents.trim());
 
         SampleClass parsedObj = gson.fromJson(jsonStr, SampleClass.class);
-        
+
         assertEquals("converted to object correctly", sampleObject, parsedObj);
     }
 }
