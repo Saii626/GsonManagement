@@ -16,122 +16,122 @@ import java.util.function.Function;
 @SuppressWarnings("unchecked")
 class JsonObjectAdapter implements TypeAdapterFactory {
 
-    private static TypeAdapter<?> jsonObjectAdapter;
-    private static final Map<Class<?>, Class<?>> conversionMap = getWrapperTypes();
+	private static TypeAdapter<?> jsonObjectAdapter;
+	private static final Map<Class<?>, Class<?>> conversionMap = getWrapperTypes();
 
-    private static Map<Class<?>, Class<?>> getWrapperTypes() {
-        Map<Class<?>, Class<?>> map = new HashMap<>();
-        map.put(Boolean.class, Boolean.class);
+	private static Map<Class<?>, Class<?>> getWrapperTypes() {
+		Map<Class<?>, Class<?>> map = new HashMap<>();
+		map.put(Boolean.class, Boolean.class);
 
-        map.put(Character.class, String.class);
-        map.put(String.class, String.class);
+		map.put(Character.class, String.class);
+		map.put(String.class, String.class);
 
-        map.put(Byte.class, Integer.class);
-        map.put(Short.class, Integer.class);
-        map.put(Integer.class, Integer.class);
+		map.put(Byte.class, Integer.class);
+		map.put(Short.class, Integer.class);
+		map.put(Integer.class, Integer.class);
 
-        map.put(Long.class, Long.class);
+		map.put(Long.class, Long.class);
 
-        map.put(Float.class, Double.class);
-        map.put(Double.class, Double.class);
+		map.put(Float.class, Double.class);
+		map.put(Double.class, Double.class);
 
-        return map;
-    }
+		return map;
+	}
 
-    @Override
-    public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+	@Override
+	public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
 
-        if (!type.equals(TypeToken.get(JsonObject.class))) {
-            return null;
-        }
+		if (!type.equals(TypeToken.get(JsonObject.class))) {
+			return null;
+		}
 
-        if (jsonObjectAdapter == null) {
+		if (jsonObjectAdapter == null) {
 
-            Function<Class<?>, TypeAdapter<?>> gsonAdapter = gson::getAdapter;
+			Function<Class<?>, TypeAdapter<?>> gsonAdapter = gson::getAdapter;
 
-            jsonObjectAdapter = new TypeAdapter<T>() {
+			jsonObjectAdapter = new TypeAdapter<T>() {
 
-                @Override
-                public void write(JsonWriter out, T value) throws IOException {
-                    if (value == null) {
-                        out.nullValue();
-                        return;
-                    }
+				@Override
+				public void write(JsonWriter out, T value) throws IOException {
+					if (value == null) {
+						out.nullValue();
+						return;
+					}
 
-                    JsonObject objectToWrite = (JsonObject) value;
-                    Class<?> classToWrite = objectToWrite.getObject().getClass();
+					JsonObject objectToWrite = (JsonObject) value;
+					Class<?> classToWrite = objectToWrite.getObject().getClass();
 
-                    out.beginObject();
-                    out.name(objectToWrite.getTypeName()).value(classToWrite.getName());
+					out.beginObject();
+					out.name(objectToWrite.getTypeName()).value(classToWrite.getName());
 
-                    out.name(objectToWrite.getDataName());
-                    if (conversionMap.get(classToWrite) != null) {
-                        Class<?> c = conversionMap.get(classToWrite);
-                        if (c.equals(Boolean.class)) {
-                            out.value((Boolean) objectToWrite.getObject());
-                        } else if (c.equals(String.class)) {
-                            out.value((String) objectToWrite.getObject());
-                        } else if (c.equals(Integer.class)) {
-                            out.value((Integer) objectToWrite.getObject());
-                        } else if (c.equals(Long.class)) {
-                            out.value((Long) objectToWrite.getObject());
-                        } else if (c.equals(Double.class)) {
-                            out.value((Double) objectToWrite.getObject());
-                        }
-                    } else {
-                        TypeAdapter<T> adapter = (TypeAdapter<T>) gsonAdapter.apply(classToWrite);
-                        adapter.write(out, (T) objectToWrite.getObject());
-                    }
-                    out.endObject();
-                }
+					out.name(objectToWrite.getDataName());
+					if (conversionMap.get(classToWrite) != null) {
+						Class<?> c = conversionMap.get(classToWrite);
+						if (c.equals(Boolean.class)) {
+							out.value((Boolean) objectToWrite.getObject());
+						} else if (c.equals(String.class)) {
+							out.value((String) objectToWrite.getObject());
+						} else if (c.equals(Integer.class)) {
+							out.value((Integer) objectToWrite.getObject());
+						} else if (c.equals(Long.class)) {
+							out.value((Long) objectToWrite.getObject());
+						} else if (c.equals(Double.class)) {
+							out.value((Double) objectToWrite.getObject());
+						}
+					} else {
+						TypeAdapter<T> adapter = (TypeAdapter<T>) gsonAdapter.apply(classToWrite);
+						adapter.write(out, (T) objectToWrite.getObject());
+					}
+					out.endObject();
+				}
 
-                @Override
-                public T read(JsonReader in) throws IOException {
-                    if (in.peek() == JsonToken.NULL) {
-                        in.nextNull();
-                        return null;
-                    }
+				@Override
+				public T read(JsonReader in) throws IOException {
+					if (in.peek() == JsonToken.NULL) {
+						in.nextNull();
+						return null;
+					}
 
-                    // JsonObject jsonObject = new JsonObject();
-                    String typename;
-                    String dataName;
-                    Object object = null;
+					// JsonObject jsonObject = new JsonObject();
+					String typename;
+					String dataName;
+					Object object = null;
 
-                    in.beginObject();
-                    typename = in.nextName();
+					in.beginObject();
+					typename = in.nextName();
 
-                    String className = in.nextString();
-                    try {
-                        Class<?> classType = Class.forName(className);
+					String className = in.nextString();
+					try {
+						Class<?> classType = Class.forName(className);
 
-                        dataName = in.nextName();
-                        if (conversionMap.get(classType) != null) {
-                            Class<?> c = conversionMap.get(classType);
-                            if (c.equals(Boolean.class)) {
-                                 object = in.nextBoolean();
-                            } else if (c.equals(String.class)) {
-                                object = in.nextString();
-                            } else if (c.equals(Integer.class)) {
-                                object = in.nextInt();
-                            } else if (c.equals(Long.class)) {
-                                object = in.nextLong();
-                            } else if (c.equals(Double.class)) {
-                                object = in.nextDouble();
-                            }
-                        } else {
-                            object = gsonAdapter.apply(classType).read(in);
-                        }
+						dataName = in.nextName();
+						if (conversionMap.get(classType) != null) {
+							Class<?> c = conversionMap.get(classType);
+							if (c.equals(Boolean.class)) {
+								 object = in.nextBoolean();
+							} else if (c.equals(String.class)) {
+								object = in.nextString();
+							} else if (c.equals(Integer.class)) {
+								object = in.nextInt();
+							} else if (c.equals(Long.class)) {
+								object = in.nextLong();
+							} else if (c.equals(Double.class)) {
+								object = in.nextDouble();
+							}
+						} else {
+							object = gsonAdapter.apply(classType).read(in);
+						}
 
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                        return null;
-                    }
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+						return null;
+					}
 
-                    in.endObject();
-                    return (T) new JsonObject(object, typename, dataName);
-                }
-            };
-        }
-        return (TypeAdapter<T>) jsonObjectAdapter;
-    }
+					in.endObject();
+					return (T) new JsonObject(object, typename, dataName);
+				}
+			};
+		}
+		return (TypeAdapter<T>) jsonObjectAdapter;
+	}
 }

@@ -6,15 +6,15 @@ import com.google.gson.Gson;
 
 public class TestGson {
 
-    private Gson gson;
+	private Gson gson;
 
-    @Inject
-    public TestGson(Gson gson) {
-        this.gson = gson;
-    }
+	@Inject
+	public TestGson(Gson gson) {
+		this.gson = gson;
+	}
 
-    public Gson getGson() {
-        return gson;
-    }
+	public Gson getGson() {
+		return gson;
+	}
 
  }

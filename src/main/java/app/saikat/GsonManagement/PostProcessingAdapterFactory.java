@@ -11,27 +11,27 @@ import com.google.gson.stream.JsonWriter;
 
 class PostProcessingAdapterFactory implements TypeAdapterFactory {
 
-    @Override
-    public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
-        TypeAdapter<T> defaultAdapter = gson.getDelegateAdapter(this, type);
+	@Override
+	public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+		TypeAdapter<T> defaultAdapter = gson.getDelegateAdapter(this, type);
 
-        return new TypeAdapter<T>() {
+		return new TypeAdapter<T>() {
 
-            @Override
-            public void write(JsonWriter out, T value) throws IOException {
-                defaultAdapter.write(out, value);
-            }
+			@Override
+			public void write(JsonWriter out, T value) throws IOException {
+				defaultAdapter.write(out, value);
+			}
 
-            @Override
-            public T read(JsonReader in) throws IOException {
-                T obj = defaultAdapter.read(in);
-                if (obj instanceof PostProcessable) {
-                    ((PostProcessable) obj).postProcess();
-                }
+			@Override
+			public T read(JsonReader in) throws IOException {
+				T obj = defaultAdapter.read(in);
+				if (obj instanceof PostProcessable) {
+					((PostProcessable) obj).postProcess();
+				}
 
-                return obj;
-            }
-        };
-    }
+				return obj;
+			}
+		};
+	}
 
 }

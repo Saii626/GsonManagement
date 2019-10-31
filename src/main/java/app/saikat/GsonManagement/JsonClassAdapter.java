@@ -12,18 +12,18 @@ import java.lang.reflect.Type;
 
 class JsonClassAdapter implements JsonSerializer<Class<?>>, JsonDeserializer<Class<?>> {
 
-    @Override
-    public Class<?> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-            throws JsonParseException {
-        try {
-            return Class.forName(json.getAsString());
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Unable to cast");
-        }
-    }
+	@Override
+	public Class<?> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+			throws JsonParseException {
+		try {
+			return Class.forName(json.getAsString());
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException("Unable to cast");
+		}
+	}
 
-    @Override
-    public JsonElement serialize(Class<?> src, Type typeOfSrc, JsonSerializationContext context) {
-        return new JsonPrimitive(src.getName());
-    }
+	@Override
+	public JsonElement serialize(Class<?> src, Type typeOfSrc, JsonSerializationContext context) {
+		return new JsonPrimitive(src.getName());
+	}
 }
