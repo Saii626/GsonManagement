@@ -3,6 +3,8 @@ package app.saikat.GsonManagement;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 
+import app.saikat.Annotations.GsonManagement.Exclude;
+
 class AnnotedExclusionStrategy implements ExclusionStrategy {
 
 	@Override

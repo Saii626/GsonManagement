@@ -1,7 +1,9 @@
-include ':DIManagement', ':LogManagement', ':PojoCollections'
+include ':Annotations', ':PojoCollections', ':DIManagement'
 
+project(':Annotations').projectDir = file('../Annotations')
+
+// Test dependencies
 project(':DIManagement').projectDir = file('../DIManagement')
-project(':LogManagement').projectDir = file('../LogManagement')
 project(':PojoCollections').projectDir = file('../PojoCollections')
 
 rootProject.name = 'GsonManagement'
