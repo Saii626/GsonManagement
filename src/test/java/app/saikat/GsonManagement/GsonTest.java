@@ -17,7 +17,6 @@ import com.google.gson.Gson;
 import org.junit.Before;
 import org.junit.Test;
 
-import app.saikat.DIManagement.Exceptions.ClassNotUnderDIException;
 import app.saikat.DIManagement.Interfaces.DIManager;
 import app.saikat.GsonManagement.Test_1.TestGson;
 import app.saikat.GsonManagement.Test_2.SampleClass;
@@ -31,9 +30,9 @@ public class GsonTest {
 	}
 
 	@Test
-	public void gsonInstanceCreate() throws ClassNotUnderDIException {
+	public void gsonInstanceCreate() {
 		DIManager manager = DIManager.newInstance();
-		manager.initialize("app.saikat.GsonManagement");
+		manager.scan("app.saikat.GsonManagement", "app.saikat.DIManagement.Annotations", "app.saikat.DIManagement.Impl.BeanManagers");
 
 		TestGson t = manager.getBeansOfType(TestGson.class).iterator().next().getProvider().get();
 		Gson gson = manager.getBeansOfType(Gson.class).iterator().next().getProvider().get();
@@ -43,10 +42,10 @@ public class GsonTest {
 	}
 
 	@Test
-	public void conversionTest() throws UnsupportedEncodingException, IOException, ClassNotUnderDIException {
+	public void conversionTest() throws UnsupportedEncodingException, IOException {
 		System.setProperty("build", "dev");
 		DIManager manager = DIManager.newInstance();
-		manager.initialize("app.saikat.GsonManagement");
+		manager.scan("app.saikat.GsonManagement", "app.saikat.DIManagement.Annotations", "app.saikat.DIManagement.Impl.BeanManagers");
 
 		Map<String, List<TestType>> map = new HashMap<>();
 		List<TestType> l1 = new ArrayList<>();
@@ -81,10 +80,10 @@ public class GsonTest {
 	}
 
 	@Test
-	public void conversionTestProd() throws UnsupportedEncodingException, IOException, ClassNotUnderDIException {
+	public void conversionTestProd() throws UnsupportedEncodingException, IOException {
 		System.setProperty("build", "prod");
 		DIManager manager = DIManager.newInstance();
-		manager.initialize("app.saikat.GsonManagement");
+		manager.scan("app.saikat.GsonManagement", "app.saikat.DIManagement.Annotations", "app.saikat.DIManagement.Impl.BeanManagers");
 
 		Map<String, List<TestType>> map = new HashMap<>();
 		List<TestType> l1 = new ArrayList<>();
