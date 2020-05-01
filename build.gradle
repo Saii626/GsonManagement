@@ -46,9 +46,9 @@ task fatJar(type: Jar) {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
-jar.finalizedBy(copyToLib)
-jar.finalizedBy(fatJar)
-jar.dependsOn(copyProj)
+build.finalizedBy(copyToLib)
+build.finalizedBy(fatJar)
+build.dependsOn(copyProj)
 
 test {
     useJUnit()

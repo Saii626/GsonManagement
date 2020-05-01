@@ -32,7 +32,7 @@ public class GsonTest {
 	@Test
 	public void gsonInstanceCreate() {
 		DIManager manager = DIManager.newInstance();
-		manager.scan("app.saikat.GsonManagement", "app.saikat.DIManagement.Annotations", "app.saikat.DIManagement.Impl.BeanManagers");
+		manager.scan("app.saikat.GsonManagement", "app.saikat.Annotations", "app.saikat.DIManagement.Impl.BeanManagers");
 
 		TestGson t = manager.getBeansOfType(TestGson.class).iterator().next().getProvider().get();
 		Gson gson = manager.getBeansOfType(Gson.class).iterator().next().getProvider().get();
@@ -45,7 +45,7 @@ public class GsonTest {
 	public void conversionTest() throws UnsupportedEncodingException, IOException {
 		System.setProperty("build", "dev");
 		DIManager manager = DIManager.newInstance();
-		manager.scan("app.saikat.GsonManagement", "app.saikat.DIManagement.Annotations", "app.saikat.DIManagement.Impl.BeanManagers");
+		manager.scan("app.saikat.GsonManagement", "app.saikat.Annotations", "app.saikat.DIManagement.Impl.BeanManagers");
 
 		Map<String, List<TestType>> map = new HashMap<>();
 		List<TestType> l1 = new ArrayList<>();
@@ -83,7 +83,7 @@ public class GsonTest {
 	public void conversionTestProd() throws UnsupportedEncodingException, IOException {
 		System.setProperty("build", "prod");
 		DIManager manager = DIManager.newInstance();
-		manager.scan("app.saikat.GsonManagement", "app.saikat.DIManagement.Annotations", "app.saikat.DIManagement.Impl.BeanManagers");
+		manager.scan("app.saikat.GsonManagement", "app.saikat.Annotations", "app.saikat.DIManagement.Impl.BeanManagers");
 
 		Map<String, List<TestType>> map = new HashMap<>();
 		List<TestType> l1 = new ArrayList<>();
